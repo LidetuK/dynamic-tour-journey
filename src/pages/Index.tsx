@@ -1,6 +1,6 @@
 
 import TourBookingForm from "@/components/TourBookingForm";
-import { Toaster } from "@/components/ui/toast";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
