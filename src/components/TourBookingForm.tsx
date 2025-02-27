@@ -74,6 +74,7 @@ const TourBookingForm = () => {
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
   const [receiptError, setReceiptError] = useState(false);
   const [planePosition, setPlanePosition] = useState(-50);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { toast } = useToast();
 
   // Airplane animation
@@ -94,40 +95,103 @@ const TourBookingForm = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Clear validation errors when input changes
+    setValidationErrors([]);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, receipt: e.target.files[0] });
       setReceiptError(false);
+      setValidationErrors([]);
     }
   };
 
   const handlePackageSelect = (packageId: string) => {
     setFormData({ ...formData, selectedPackage: packageId });
+    setValidationErrors([]);
+  };
+
+  const validateCurrentStep = (): boolean => {
+    const errors: string[] = [];
+    
+    switch (currentStep) {
+      case 1:
+        if (!formData.destination.trim()) {
+          errors.push("Please enter your destination");
+        }
+        break;
+      case 2:
+        if (!formData.startDate) {
+          errors.push("Please select a departure date");
+        }
+        if (!formData.endTime) {
+          errors.push("Please select a departure time");
+        }
+        break;
+      case 3:
+        if (!formData.fullName.trim()) {
+          errors.push("Please enter your full name");
+        }
+        if (!formData.email.trim()) {
+          errors.push("Please enter your email address");
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+          errors.push("Please enter a valid email address");
+        }
+        if (!formData.phone.trim()) {
+          errors.push("Please enter your phone number");
+        }
+        break;
+      case 4:
+        if (!formData.selectedPackage) {
+          errors.push("Please select a tour package");
+        }
+        break;
+      case 5:
+        // No validation needed for payment information display
+        break;
+      case 6:
+        if (!formData.receipt) {
+          errors.push("Please upload your payment receipt");
+          setReceiptError(true);
+        }
+        break;
+    }
+
+    setValidationErrors(errors);
+    return errors.length === 0;
   };
 
   const nextStep = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1);
+    if (validateCurrentStep()) {
+      if (currentStep < steps.length) {
+        setCurrentStep(currentStep + 1);
+      }
+    } else {
+      // Show toast with validation errors
+      toast({
+        title: "Please complete all required fields",
+        description: validationErrors.join(", "),
+      });
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+      // Clear validation errors when going back
+      setValidationErrors([]);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate receipt upload
-    if (!formData.receipt) {
-      setReceiptError(true);
+    // Final validation before submission
+    if (!validateCurrentStep()) {
       toast({
-        title: "Upload Required",
-        description: "Please upload your payment receipt before submitting.",
+        title: "Required Fields Missing",
+        description: validationErrors.join(", "),
       });
       return;
     }
@@ -195,8 +259,13 @@ const TourBookingForm = () => {
                 value={formData.destination}
                 onChange={handleInputChange}
                 placeholder="Enter your dream destination"
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  validationErrors.length > 0 ? "border-red-500" : "border-form-border"
+                } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
               />
+              {validationErrors.length > 0 && (
+                <p className="text-red-500 text-sm">{validationErrors[0]}</p>
+              )}
             </div>
           </div>
         );
@@ -215,8 +284,13 @@ const TourBookingForm = () => {
                   name="startDate"
                   value={formData.startDate}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    validationErrors.includes("Please select a departure date") ? "border-red-500" : "border-form-border"
+                  } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
                 />
+                {validationErrors.includes("Please select a departure date") && (
+                  <p className="text-red-500 text-sm">Please select a departure date</p>
+                )}
               </div>
               <div>
                 <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
@@ -228,8 +302,13 @@ const TourBookingForm = () => {
                   name="endTime"
                   value={formData.endTime}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                  className={`w-full px-4 py-3 rounded-lg border ${
+                    validationErrors.includes("Please select a departure time") ? "border-red-500" : "border-form-border"
+                  } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
                 />
+                {validationErrors.includes("Please select a departure time") && (
+                  <p className="text-red-500 text-sm">Please select a departure time</p>
+                )}
               </div>
             </div>
           </div>
@@ -245,24 +324,42 @@ const TourBookingForm = () => {
                 value={formData.fullName}
                 onChange={handleInputChange}
                 placeholder="Full Name"
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  validationErrors.includes("Please enter your full name") ? "border-red-500" : "border-form-border"
+                } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
               />
+              {validationErrors.includes("Please enter your full name") && (
+                <p className="text-red-500 text-sm">Please enter your full name</p>
+              )}
+              
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Email Address"
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  validationErrors.some(e => e.includes("email")) ? "border-red-500" : "border-form-border"
+                } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
               />
+              {validationErrors.some(e => e.includes("email")) && (
+                <p className="text-red-500 text-sm">{validationErrors.find(e => e.includes("email"))}</p>
+              )}
+              
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Phone Number"
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  validationErrors.includes("Please enter your phone number") ? "border-red-500" : "border-form-border"
+                } bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20`}
               />
+              {validationErrors.includes("Please enter your phone number") && (
+                <p className="text-red-500 text-sm">Please enter your phone number</p>
+              )}
+              
               <div>
                 <label htmlFor="participants" className="block text-sm font-medium text-gray-700 mb-1">
                   Number of Participants
@@ -296,6 +393,8 @@ const TourBookingForm = () => {
                   className={`p-4 border rounded-lg transition-all duration-300 cursor-pointer hover-scale
                     ${formData.selectedPackage === pkg.id
                       ? "border-form-accent bg-form-accent/5"
+                      : validationErrors.length > 0
+                      ? "border-red-500 bg-white/50"
                       : "border-form-border bg-white/50"
                     }`}
                 >
@@ -314,6 +413,9 @@ const TourBookingForm = () => {
                   </div>
                 </div>
               ))}
+              {validationErrors.includes("Please select a tour package") && (
+                <p className="text-red-500 text-sm">Please select a tour package</p>
+              )}
             </div>
           </div>
         );
@@ -336,7 +438,7 @@ const TourBookingForm = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <h2 className="text-2xl font-semibold mb-6">Upload Payment Receipt</h2>
-            <div className={`border-2 border-dashed ${receiptError ? 'border-red-500' : 'border-form-border'} rounded-lg p-8 text-center`}>
+            <div className={`border-2 border-dashed ${receiptError || validationErrors.length > 0 ? 'border-red-500' : 'border-form-border'} rounded-lg p-8 text-center`}>
               <input
                 type="file"
                 name="receipt"
@@ -349,11 +451,11 @@ const TourBookingForm = () => {
                 htmlFor="receipt"
                 className="cursor-pointer flex flex-col items-center space-y-4"
               >
-                <Upload className={`w-12 h-12 ${receiptError ? 'text-red-500' : 'text-form-accent'}`} />
+                <Upload className={`w-12 h-12 ${receiptError || validationErrors.length > 0 ? 'text-red-500' : 'text-form-accent'}`} />
                 <div className="space-y-2">
                   <p className="text-lg font-medium">Drop your receipt here</p>
                   <p className="text-sm text-gray-500">or click to select file</p>
-                  {receiptError && (
+                  {(receiptError || validationErrors.length > 0) && (
                     <p className="text-red-500 font-medium">Please upload your payment receipt</p>
                   )}
                 </div>
