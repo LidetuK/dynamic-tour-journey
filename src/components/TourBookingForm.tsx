@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Calendar, MapPin, User, CreditCard, Upload } from "lucide-react";
+import { Calendar, MapPin, User, CreditCard, Upload, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const steps = [
@@ -44,6 +44,8 @@ const TourBookingForm = () => {
     packageType: "standard",
     receipt: null as File | null,
   });
+  const [bookingSubmitted, setBookingSubmitted] = useState(false);
+  const [receiptError, setReceiptError] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -53,6 +55,7 @@ const TourBookingForm = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, receipt: e.target.files[0] });
+      setReceiptError(false);
     }
   };
 
@@ -70,11 +73,65 @@ const TourBookingForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate receipt upload
+    if (!formData.receipt) {
+      setReceiptError(true);
+      toast({
+        title: "Upload Required",
+        description: "Please upload your payment receipt before submitting.",
+      });
+      return;
+    }
+    
+    // Form is valid, proceed with submission
+    setBookingSubmitted(true);
     toast({
       title: "Booking Submitted!",
       description: "We'll process your booking and contact you soon.",
     });
   };
+
+  // Thank you message after successful submission
+  if (bookingSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 flex items-center justify-center">
+        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl p-8 max-w-2xl w-full text-center">
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+              <Check className="w-10 h-10 text-green-500" />
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold text-form-accent mb-4">Thank You!</h1>
+          <p className="text-xl mb-6">Your booking has been successfully submitted.</p>
+          <p className="text-gray-600 mb-8">
+            We have received your tour booking information and payment receipt. Our team will review your details
+            and contact you shortly to confirm your amazing journey!
+          </p>
+          <button
+            onClick={() => {
+              setBookingSubmitted(false);
+              setCurrentStep(1);
+              setFormData({
+                destination: "",
+                startDate: "",
+                endDate: "",
+                fullName: "",
+                email: "",
+                phone: "",
+                participants: "1",
+                packageType: "standard",
+                receipt: null,
+              });
+            }}
+            className="px-6 py-3 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors"
+          >
+            Book Another Tour
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const renderStep = () => {
     switch (currentStep) {
@@ -167,7 +224,7 @@ const TourBookingForm = () => {
         return (
           <div className="space-y-6 animate-step-in">
             <h2 className="text-2xl font-semibold mb-6">Upload Payment Receipt</h2>
-            <div className="border-2 border-dashed border-form-border rounded-lg p-8 text-center">
+            <div className={`border-2 border-dashed ${receiptError ? 'border-red-500' : 'border-form-border'} rounded-lg p-8 text-center`}>
               <input
                 type="file"
                 name="receipt"
@@ -180,10 +237,13 @@ const TourBookingForm = () => {
                 htmlFor="receipt"
                 className="cursor-pointer flex flex-col items-center space-y-4"
               >
-                <Upload className="w-12 h-12 text-form-accent" />
+                <Upload className={`w-12 h-12 ${receiptError ? 'text-red-500' : 'text-form-accent'}`} />
                 <div className="space-y-2">
                   <p className="text-lg font-medium">Drop your receipt here</p>
                   <p className="text-sm text-gray-500">or click to select file</p>
+                  {receiptError && (
+                    <p className="text-red-500 font-medium">Please upload your payment receipt</p>
+                  )}
                 </div>
               </label>
               {formData.receipt && (
