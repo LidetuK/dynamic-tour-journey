@@ -36,7 +36,7 @@ const TourBookingForm = () => {
   const [formData, setFormData] = useState({
     destination: "",
     startDate: "",
-    endDate: "",
+    endTime: "",
     fullName: "",
     email: "",
     phone: "",
@@ -115,7 +115,7 @@ const TourBookingForm = () => {
               setFormData({
                 destination: "",
                 startDate: "",
-                endDate: "",
+                endTime: "",
                 fullName: "",
                 email: "",
                 phone: "",
@@ -156,20 +156,32 @@ const TourBookingForm = () => {
           <div className="space-y-4 animate-step-in">
             <h2 className="text-2xl font-semibold mb-6">When are you planning to travel?</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
-              />
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
-              />
+              <div>
+                <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Departure Date
+                </label>
+                <input
+                  id="startDate"
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                />
+              </div>
+              <div>
+                <label htmlFor="endTime" className="block text-sm font-medium text-gray-700 mb-1">
+                  Departure Time
+                </label>
+                <input
+                  id="endTime"
+                  type="time"
+                  name="endTime"
+                  value={formData.endTime}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 rounded-lg border border-form-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-form-accent/20"
+                />
+              </div>
             </div>
           </div>
         );
