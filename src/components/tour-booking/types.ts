@@ -1,19 +1,19 @@
 
-import { ReactNode } from "react";
+import { LucideIcon } from "lucide-react";
 
 export interface TourPackage {
   id: string;
   title: string;
   description: string;
   imageUrl: string;
-  icon: ReactNode;
+  icon: LucideIcon;
   color: string;
 }
 
 export interface FormStep {
   id: number;
   title: string;
-  icon: ReactNode;
+  icon: LucideIcon;
 }
 
 export interface TourFormData {

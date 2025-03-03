@@ -6,32 +6,32 @@ export const FORM_STEPS: FormStep[] = [
   {
     id: 1,
     title: "Destination",
-    icon: <MapPin className="w-5 h-5" />,
+    icon: MapPin,
   },
   {
     id: 2,
     title: "Travel Dates",
-    icon: <Calendar className="w-5 h-5" />,
+    icon: Calendar,
   },
   {
     id: 3,
     title: "Personal Info",
-    icon: <User className="w-5 h-5" />,
+    icon: User,
   },
   {
     id: 4,
     title: "Tour Package",
-    icon: <Package className="w-5 h-5" />,
+    icon: Package,
   },
   {
     id: 5,
     title: "Payment",
-    icon: <CreditCard className="w-5 h-5" />,
+    icon: CreditCard,
   },
   {
     id: 6,
     title: "Receipt",
-    icon: <Upload className="w-5 h-5" />,
+    icon: Upload,
   },
 ];
 
@@ -41,7 +41,7 @@ export const TOUR_PACKAGES: TourPackage[] = [
     title: "Explore the iconic rock-hewn churches of Ethiopia",
     description: "Journey through Ethiopia's spiritual wonders and ancient architecture with expert guides.",
     imageUrl: "/placeholder.svg",
-    icon: <Landmark className="w-12 h-12 text-form-accent" />,
+    icon: Landmark,
     color: "bg-purple-50",
   },
   {
@@ -49,7 +49,7 @@ export const TOUR_PACKAGES: TourPackage[] = [
     title: "Discover the ancient walled city and its fascinating heritage",
     description: "Step back in time as you explore traditional villages and experience authentic Ethiopian culture.",
     imageUrl: "/placeholder.svg",
-    icon: <Building className="w-12 h-12 text-form-accent" />,
+    icon: Building,
     color: "bg-blue-50",
   },
   {
@@ -57,12 +57,12 @@ export const TOUR_PACKAGES: TourPackage[] = [
     title: "Witness the Otherworldly Beauty of Erta Ale",
     description: "Embark on an adventure to see the spectacular active lava lake of Erta Ale volcano.",
     imageUrl: "/placeholder.svg",
-    icon: <Mountain className="w-12 h-12 text-form-accent" />,
+    icon: Mountain,
     color: "bg-orange-50",
   },
 ];
 
-export const INITIAL_FORM_DATA: TourFormData = {
+export const INITIAL_FORM_DATA = {
   destination: "",
   startDate: "",
   endTime: "",
