@@ -25,7 +25,11 @@ const FormStepIndicator: React.FC<FormStepIndicatorProps> = ({ steps, currentSte
                     : "bg-form-muted text-gray-400"
                 }`}
               >
-                {step.id === currentStep ? <IconComponent className="w-5 h-5" /> : step.id < currentStep ? <Check className="w-5 h-5" /> : <IconComponent className="w-5 h-5" />}
+                {step.id < currentStep ? (
+                  <Check className="w-5 h-5" />
+                ) : (
+                  <IconComponent className="w-5 h-5" />
+                )}
               </div>
               {step.id !== steps.length && (
                 <div
