@@ -84,15 +84,12 @@ const TourBookingForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  // Airplane animation
   useEffect(() => {
     const animationInterval = setInterval(() => {
       setPlanePosition(prev => {
-        // Reset position when the plane goes off screen
         if (prev > window.innerWidth) {
           return -50;
         }
-        // Move the plane 5px to the right each interval
         return prev + 5;
       });
     }, 50);
@@ -102,7 +99,6 @@ const TourBookingForm = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear validation errors when input changes
     setValidationErrors([]);
   };
 
@@ -155,7 +151,6 @@ const TourBookingForm = () => {
         }
         break;
       case 5:
-        // No validation needed for payment information display
         break;
       case 6:
         if (!formData.receipt) {
@@ -175,7 +170,6 @@ const TourBookingForm = () => {
         setCurrentStep(currentStep + 1);
       }
     } else {
-      // Show toast with validation errors
       toast({
         title: "Please complete all required fields",
         description: validationErrors.join(", "),
@@ -186,7 +180,6 @@ const TourBookingForm = () => {
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
-      // Clear validation errors when going back
       setValidationErrors([]);
     }
   };
@@ -194,7 +187,6 @@ const TourBookingForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Final validation before submission
     if (!validateCurrentStep()) {
       toast({
         title: "Required Fields Missing",
@@ -203,11 +195,9 @@ const TourBookingForm = () => {
       return;
     }
     
-    // Form is valid, proceed with submission
     setIsSubmitting(true);
     
     try {
-      // Create form data for web3forms API
       const apiFormData = new FormData();
       apiFormData.append('access_key', '3333d230-1703-4f1f-a301-39c2b6a8c048');
       apiFormData.append('destination', formData.destination);
@@ -219,18 +209,15 @@ const TourBookingForm = () => {
       apiFormData.append('participants', formData.participants);
       apiFormData.append('selectedPackage', formData.selectedPackage);
       
-      // Find the selected package title
       const selectedPackageInfo = tourPackages.find(pkg => pkg.id === formData.selectedPackage);
       if (selectedPackageInfo) {
         apiFormData.append('packageTitle', selectedPackageInfo.title);
       }
       
-      // Append receipt file if available
       if (formData.receipt) {
         apiFormData.append('receipt', formData.receipt);
       }
       
-      // Send data to web3forms API
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: apiFormData,
@@ -257,7 +244,6 @@ const TourBookingForm = () => {
     }
   };
 
-  // Thank you message after successful submission
   if (bookingSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 flex items-center justify-center">
@@ -579,7 +565,6 @@ const TourBookingForm = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 sm:px-6 relative overflow-hidden">
-      {/* Flying airplane animation */}
       <div 
         className="absolute transform -translate-y-1/2"
         style={{ 
@@ -607,7 +592,7 @@ const TourBookingForm = () => {
                         : "bg-form-muted text-gray-400"
                     }`}
                   >
-                    {step.icon}
+                    {step.id === currentStep ? step.icon : step.id < currentStep ? <Check className="w-5 h-5" /> : step.icon}
                   </div>
                   {step.id !== steps.length && (
                     <div
