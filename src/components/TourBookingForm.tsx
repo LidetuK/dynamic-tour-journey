@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Calendar, MapPin, User, CreditCard, Upload, Check, Package, Plane } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -75,6 +74,7 @@ const TourBookingForm = () => {
   const [receiptError, setReceiptError] = useState(false);
   const [planePosition, setPlanePosition] = useState(-50);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   // Airplane animation
@@ -184,7 +184,7 @@ const TourBookingForm = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Final validation before submission
@@ -197,11 +197,57 @@ const TourBookingForm = () => {
     }
     
     // Form is valid, proceed with submission
-    setBookingSubmitted(true);
-    toast({
-      title: "Booking Submitted!",
-      description: "We'll process your booking and contact you soon.",
-    });
+    setIsSubmitting(true);
+    
+    try {
+      // Create form data for web3forms API
+      const apiFormData = new FormData();
+      apiFormData.append('access_key', '3333d230-1703-4f1f-a301-39c2b6a8c048');
+      apiFormData.append('destination', formData.destination);
+      apiFormData.append('startDate', formData.startDate);
+      apiFormData.append('endTime', formData.endTime);
+      apiFormData.append('fullName', formData.fullName);
+      apiFormData.append('email', formData.email);
+      apiFormData.append('phone', formData.phone);
+      apiFormData.append('participants', formData.participants);
+      apiFormData.append('selectedPackage', formData.selectedPackage);
+      
+      // Find the selected package title
+      const selectedPackageInfo = tourPackages.find(pkg => pkg.id === formData.selectedPackage);
+      if (selectedPackageInfo) {
+        apiFormData.append('packageTitle', selectedPackageInfo.title);
+      }
+      
+      // Append receipt file if available
+      if (formData.receipt) {
+        apiFormData.append('receipt', formData.receipt);
+      }
+      
+      // Send data to web3forms API
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: apiFormData,
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setBookingSubmitted(true);
+        toast({
+          title: "Booking Submitted!",
+          description: "We'll process your booking and contact you soon.",
+        });
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description: error instanceof Error ? error.message : "Failed to submit the form. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Thank you message after successful submission
@@ -474,7 +520,7 @@ const TourBookingForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 sm:px-6 relative overflow-hidden">
       {/* Flying airplane animation */}
       <div 
         className="absolute transform -translate-y-1/2"
@@ -489,13 +535,13 @@ const TourBookingForm = () => {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl p-8 transform transition-all duration-500 hover:shadow-xl">
-          <div className="flex justify-center mb-8 relative">
-            <div className="flex items-center">
+        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl p-4 sm:p-8 transform transition-all duration-500 hover:shadow-xl">
+          <div className="flex justify-center mb-8 relative overflow-x-auto py-2">
+            <div className="flex items-center w-full overflow-x-auto md:overflow-visible px-2 sm:px-0">
               {steps.map((step) => (
-                <div key={step.id} className="flex items-center">
+                <div key={step.id} className="flex items-center flex-shrink-0">
                   <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 transform ${
+                    className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full transition-all duration-300 transform ${
                       step.id === currentStep
                         ? "bg-form-accent text-white scale-110"
                         : step.id < currentStep
@@ -507,7 +553,7 @@ const TourBookingForm = () => {
                   </div>
                   {step.id !== steps.length && (
                     <div
-                      className={`w-8 h-0.5 transition-all duration-500 ${
+                      className={`w-4 sm:w-8 h-0.5 transition-all duration-500 ${
                         step.id < currentStep ? "bg-green-500" : "bg-form-muted"
                       }`}
                     />
@@ -524,7 +570,7 @@ const TourBookingForm = () => {
               <button
                 type="button"
                 onClick={prevStep}
-                className={`px-6 py-2 rounded-lg border border-form-accent text-form-accent hover:bg-form-accent/5 transition-colors ${
+                className={`px-3 sm:px-6 py-2 rounded-lg border border-form-accent text-form-accent hover:bg-form-accent/5 transition-colors ${
                   currentStep === 1 ? "opacity-50 cursor-not-allowed" : ""
                 }`}
                 disabled={currentStep === 1}
@@ -535,16 +581,17 @@ const TourBookingForm = () => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200"
+                  className="px-3 sm:px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200"
                 >
                   Next
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200"
+                  disabled={isSubmitting}
+                  className="px-3 sm:px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  Submit Booking
+                  {isSubmitting ? "Submitting..." : "Submit Booking"}
                 </button>
               )}
             </div>
