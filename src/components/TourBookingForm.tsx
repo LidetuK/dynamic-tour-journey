@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Calendar, MapPin, User, CreditCard, Upload, Check, Package, Plane } from "lucide-react";
+import { Calendar, MapPin, User, CreditCard, Upload, Check, Package, Plane, Building, Mountain, Landmark } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const steps = [
   {
@@ -41,18 +42,24 @@ const tourPackages = [
     title: "Explore the iconic rock-hewn churches of Ethiopia",
     description: "Journey through Ethiopia's spiritual wonders and ancient architecture with expert guides.",
     imageUrl: "/placeholder.svg",
+    icon: <Landmark className="w-12 h-12 text-form-accent" />,
+    color: "bg-purple-50",
   },
   {
     id: "walled-city",
     title: "Discover the ancient walled city and its fascinating heritage",
     description: "Step back in time as you explore traditional villages and experience authentic Ethiopian culture.",
     imageUrl: "/placeholder.svg",
+    icon: <Building className="w-12 h-12 text-form-accent" />,
+    color: "bg-blue-50",
   },
   {
     id: "erta-ale",
     title: "Witness the Otherworldly Beauty of Erta Ale",
     description: "Embark on an adventure to see the spectacular active lava lake of Erta Ale volcano.",
     imageUrl: "/placeholder.svg",
+    icon: <Mountain className="w-12 h-12 text-form-accent" />,
+    color: "bg-orange-50",
   },
 ];
 
@@ -431,30 +438,44 @@ const TourBookingForm = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <h2 className="text-2xl font-semibold mb-6">Select Your Tour Package</h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {tourPackages.map((pkg) => (
                 <div
                   key={pkg.id}
                   onClick={() => handlePackageSelect(pkg.id)}
-                  className={`p-4 border rounded-lg transition-all duration-300 cursor-pointer hover-scale
+                  className={`p-6 border rounded-lg transition-all duration-300 cursor-pointer hover-scale shadow-sm
                     ${formData.selectedPackage === pkg.id
-                      ? "border-form-accent bg-form-accent/5"
+                      ? "border-form-accent bg-form-accent/5 shadow-md"
                       : validationErrors.length > 0
                       ? "border-red-500 bg-white/50"
-                      : "border-form-border bg-white/50"
+                      : `border-form-border ${pkg.color} bg-white/50`
                     }`}
                 >
-                  <div className="flex flex-col md:flex-row gap-4 items-center">
-                    <div className="w-full md:w-1/4 aspect-square md:aspect-auto md:h-24 rounded-lg overflow-hidden bg-form-muted flex items-center justify-center">
-                      <img
-                        src={pkg.imageUrl}
-                        alt={pkg.title}
-                        className="w-full h-full object-cover"
-                      />
+                  <div className="flex flex-col md:flex-row gap-6 items-center">
+                    <div className="w-full md:w-1/4 aspect-square md:aspect-auto md:h-auto rounded-lg overflow-hidden bg-form-muted flex items-center justify-center p-4">
+                      {pkg.icon}
                     </div>
-                    <div className="w-full md:w-3/4">
-                      <h3 className="font-medium text-lg mb-2">{pkg.title}</h3>
-                      <p className="text-gray-600">{pkg.description}</p>
+                    <div className="w-full md:w-3/4 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-medium text-xl">{pkg.title}</h3>
+                        {formData.selectedPackage === pkg.id && (
+                          <Check className="w-5 h-5 text-green-500" />
+                        )}
+                      </div>
+                      <p className="text-gray-600 leading-relaxed">{pkg.description}</p>
+                      <button 
+                        className={`px-4 py-2 mt-2 rounded-md text-sm font-medium transition-colors ${
+                          formData.selectedPackage === pkg.id 
+                            ? "bg-form-accent text-white" 
+                            : "bg-white text-form-accent border border-form-accent"
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePackageSelect(pkg.id);
+                        }}
+                      >
+                        {formData.selectedPackage === pkg.id ? "Selected" : "Select Package"}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -469,13 +490,50 @@ const TourBookingForm = () => {
         return (
           <div className="space-y-6 animate-fade-in">
             <h2 className="text-2xl font-semibold mb-6">Payment Information</h2>
-            <div className="bg-form-muted p-6 rounded-lg space-y-4">
-              <h3 className="text-lg font-medium">Bank Transfer Details:</h3>
-              <div className="space-y-2">
-                <p><span className="font-medium">Bank:</span> Commercial Bank of Ethiopia</p>
-                <p><span className="font-medium">Account Name:</span> Agaz General Trading PLC</p>
-                <p><span className="font-medium">Branch:</span> Gerji Mebrat Branch</p>
-                <p><span className="font-medium">Account Number:</span> 1000105057303</p>
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-lg space-y-6 text-center">
+              <CreditCard className="w-16 h-16 text-form-accent mx-auto mb-2" />
+              <h3 className="text-xl font-medium text-gray-800">Ready to complete your booking?</h3>
+              <p className="text-gray-600 max-w-md mx-auto">
+                Please make a bank transfer using the details below and upload the receipt in the next step.
+              </p>
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="px-6 py-3 bg-form-accent text-white rounded-lg font-medium shadow-md hover:bg-form-accent/90 transition-colors transform hover:scale-105 duration-200">
+                    View Bank Details
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Bank Transfer Details</DialogTitle>
+                    <DialogDescription>
+                      Please use the following information to make your payment
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="bg-form-muted p-6 rounded-lg space-y-4 mt-4">
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <p className="font-medium text-right">Bank:</p>
+                      <p>Commercial Bank of Ethiopia</p>
+                      
+                      <p className="font-medium text-right">Account Name:</p>
+                      <p>Agaz General Trading PLC</p>
+                      
+                      <p className="font-medium text-right">Branch:</p>
+                      <p>Gerji Mebrat Branch</p>
+                      
+                      <p className="font-medium text-right">Account Number:</p>
+                      <p className="font-mono">1000105057303</p>
+                    </div>
+                  </div>
+                  <div className="text-center mt-4 text-sm text-gray-500">
+                    After making the payment, please take a screenshot or photo of the receipt 
+                    to upload in the next step.
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
+              <div className="pt-4 text-sm text-gray-500">
+                <p>For any payment issues, please contact us at support@example.com</p>
               </div>
             </div>
           </div>
