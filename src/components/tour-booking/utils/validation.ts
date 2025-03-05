@@ -44,6 +44,8 @@ export const validateStep = (step: number, formData: TourFormData): string[] => 
         errors.push("Please upload your payment receipt");
       }
       break;
+    default:
+      break;
   }
 
   return errors;

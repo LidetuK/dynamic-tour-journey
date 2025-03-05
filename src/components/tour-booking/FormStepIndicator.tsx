@@ -12,8 +12,10 @@ const FormStepIndicator: React.FC<FormStepIndicatorProps> = ({ steps, currentSte
   return (
     <div className="mb-6 sm:mb-8 relative overflow-hidden">
       <div className="flex items-center w-full min-w-max">
-        {steps.map((step) => {
+        {steps.map((step, index) => {
           const IconComponent = step.icon;
+          const isLastStep = index === steps.length - 1;
+          
           return (
             <div key={step.id} className="flex items-center">
               <div
@@ -31,16 +33,25 @@ const FormStepIndicator: React.FC<FormStepIndicatorProps> = ({ steps, currentSte
                   <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" />
                 )}
               </div>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-4 sm:w-8 h-0.5 transition-all duration-500 ${
-                    step.id < currentStep ? "bg-green-500" : "bg-form-muted"
-                  }`}
-                />
-                <span className="hidden sm:inline text-xs mt-1 font-medium text-gray-600">
+              
+              {!isLastStep && (
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-4 sm:w-8 h-0.5 transition-all duration-500 ${
+                      step.id < currentStep ? "bg-green-500" : "bg-form-muted"
+                    }`}
+                  />
+                  <span className="hidden sm:inline text-xs mt-1 font-medium text-gray-600">
+                    {step.title}
+                  </span>
+                </div>
+              )}
+              
+              {isLastStep && (
+                <span className="hidden sm:inline text-xs mt-1 font-medium text-gray-600 ml-1">
                   {step.title}
                 </span>
-              </div>
+              )}
             </div>
           );
         })}
