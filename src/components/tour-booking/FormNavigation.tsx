@@ -19,13 +19,19 @@ const FormNavigation: React.FC = () => {
   const validateCurrentStep = (): boolean => {
     const errors = validateStep(currentStep, formData);
     setValidationErrors(errors);
+    
+    // Add debug logs
+    console.log(`Validating step ${currentStep}, errors:`, errors);
+    
     return errors.length === 0;
   };
 
   const nextStep = () => {
-    if (validateCurrentStep()) {
+    // For step 5 (payment info), we don't need validation to proceed
+    if (currentStep === 5 || validateCurrentStep()) {
       if (currentStep < FORM_STEPS.length) {
         setCurrentStep(currentStep + 1);
+        console.log(`Moving to next step: ${currentStep + 1}`);
       }
     } else {
       toast({

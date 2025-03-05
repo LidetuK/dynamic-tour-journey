@@ -38,6 +38,7 @@ export const validateStep = (step: number, formData: TourFormData): string[] => 
       break;
     case 5:
       // No validation needed for payment information display
+      // This step is just informational, so we return no errors
       break;
     case 6:
       if (!formData.receipt) {
