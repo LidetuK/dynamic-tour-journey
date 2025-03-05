@@ -43,11 +43,11 @@ const FormNavigation: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-between mt-8">
+    <div className="flex justify-between mt-6 sm:mt-8">
       <button
         type="button"
         onClick={prevStep}
-        className={`px-3 sm:px-6 py-2 rounded-lg border border-form-accent text-form-accent hover:bg-form-accent/5 transition-colors ${
+        className={`px-3 py-2 text-sm sm:text-base sm:px-6 rounded-lg border border-form-accent text-form-accent hover:bg-form-accent/5 transition-colors ${
           currentStep === 1 ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={currentStep === 1}
@@ -58,7 +58,7 @@ const FormNavigation: React.FC = () => {
         <button
           type="button"
           onClick={nextStep}
-          className="px-3 sm:px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200"
+          className="px-3 py-2 text-sm sm:text-base sm:px-6 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200"
         >
           Next
         </button>
@@ -66,9 +66,9 @@ const FormNavigation: React.FC = () => {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-3 sm:px-6 py-2 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="px-3 py-2 text-sm sm:text-base sm:px-6 rounded-lg bg-form-accent text-white hover:bg-form-accent/90 transition-colors transform hover:scale-105 transition-transform duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? "Submitting..." : "Submit Booking"}
+          {isSubmitting ? "Submitting..." : "Submit"}
         </button>
       )}
     </div>

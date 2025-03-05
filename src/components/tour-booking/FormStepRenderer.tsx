@@ -19,6 +19,9 @@ const FormStepRenderer: React.FC = () => {
     validationErrors 
   } = useFormContext();
 
+  // Add console log to debug the current step
+  console.log("Current step:", currentStep);
+
   switch (currentStep) {
     case 1:
       return (

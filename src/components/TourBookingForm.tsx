@@ -33,14 +33,16 @@ const TourBookingFormContent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-12 px-4 sm:px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-white to-form-muted py-6 px-3 sm:py-12 sm:px-6 relative overflow-hidden">
       <AnimatedPlane />
 
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-2xl p-4 sm:p-8 transform transition-all duration-500 hover:shadow-xl">
-          <FormStepIndicator steps={FORM_STEPS} currentStep={currentStep} />
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="bg-white/80 backdrop-blur-lg shadow-lg rounded-lg sm:rounded-2xl p-3 sm:p-8 transform transition-all duration-500 hover:shadow-xl">
+          <div className="overflow-x-auto pb-2">
+            <FormStepIndicator steps={FORM_STEPS} currentStep={currentStep} />
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <FormStepRenderer />
             <FormNavigation />
           </form>
