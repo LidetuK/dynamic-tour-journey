@@ -6,7 +6,7 @@ import { TourFormData } from "../types";
 interface StepReceiptProps {
   formData: TourFormData;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   receiptError: boolean;
   validationErrors: string[];
 }

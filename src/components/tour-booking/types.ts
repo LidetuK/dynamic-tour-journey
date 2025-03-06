@@ -27,5 +27,5 @@ export interface TourFormData {
   packageType: string;
   selectedPackage: string;
   receipt: File | null;
-  receiptInfo: string; // New field for text-based receipt information
+  receiptInfo: string; // Text-based receipt information
 }

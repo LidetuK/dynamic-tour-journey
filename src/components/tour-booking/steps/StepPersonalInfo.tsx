@@ -4,7 +4,7 @@ import { TourFormData } from "../types";
 
 interface StepPersonalInfoProps {
   formData: TourFormData;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   validationErrors: string[];
 }
 

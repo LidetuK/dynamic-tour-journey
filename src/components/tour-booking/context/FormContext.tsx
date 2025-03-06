@@ -16,7 +16,7 @@ interface FormContextType {
   setReceiptError: (error: boolean) => void;
   setValidationErrors: (errors: string[]) => void;
   setIsSubmitting: (isSubmitting: boolean) => void;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handlePackageSelect: (packageId: string) => void;
   resetForm: () => void;
@@ -32,7 +32,7 @@ export const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setValidationErrors([]);
   };
