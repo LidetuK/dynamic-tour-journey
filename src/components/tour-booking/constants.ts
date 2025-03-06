@@ -1,4 +1,3 @@
-
 import { MapPin, Calendar, User, CreditCard, Upload, Check, Package, Plane, Building, Mountain, Landmark } from "lucide-react";
 import { FormStep, TourPackage } from "./types";
 
@@ -72,5 +71,6 @@ export const INITIAL_FORM_DATA = {
   participants: "1",
   packageType: "",
   selectedPackage: "",
-  receipt: null
+  receipt: null,
+  receiptInfo: "",
 };

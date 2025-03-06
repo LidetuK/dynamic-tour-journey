@@ -62,6 +62,7 @@ const FormStepRenderer: React.FC = () => {
         <StepReceipt 
           formData={formData}
           handleFileChange={handleFileChange}
+          handleInputChange={handleInputChange}
           receiptError={receiptError}
           validationErrors={validationErrors}
         />

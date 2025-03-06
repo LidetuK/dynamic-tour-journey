@@ -43,8 +43,9 @@ export const validateStep = (step: number, formData: TourFormData): string[] => 
       // This step is just informational
       break;
     case 6:
-      if (!formData.receipt) {
-        errors.push("Please upload your payment receipt");
+      // Modified validation for step 6 - require either receipt file or receipt info text
+      if (!formData.receipt && !formData.receiptInfo.trim()) {
+        errors.push("Please provide receipt information or upload a receipt");
       }
       break;
     default:
