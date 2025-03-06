@@ -25,6 +25,7 @@ const TourBookingFormContent = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted, current step:", currentStep);
     await submitBookingForm(
       formData, 
       currentStep, 
