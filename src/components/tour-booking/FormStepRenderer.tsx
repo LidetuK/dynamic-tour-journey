@@ -20,7 +20,7 @@ const FormStepRenderer: React.FC = () => {
   } = useFormContext();
 
   // Add console log to debug the current step
-  console.log("Current step:", currentStep);
+  console.log("Rendering step:", currentStep);
 
   switch (currentStep) {
     case 1:

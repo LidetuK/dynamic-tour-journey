@@ -15,6 +15,8 @@ export const submitBookingForm = async (
 ) => {
   const { setIsSubmitting, setValidationErrors, setBookingSubmitted } = callbacks;
   
+  console.log("Submitting form at step:", currentStep);
+  
   // Validate the final step
   const errors = validateStep(currentStep, formData);
   setValidationErrors(errors);
@@ -30,6 +32,7 @@ export const submitBookingForm = async (
   setIsSubmitting(true);
   
   try {
+    console.log("Preparing form data for submission...");
     const apiFormData = new FormData();
     apiFormData.append('access_key', '3333d230-1703-4f1f-a301-39c2b6a8c048');
     apiFormData.append('destination', formData.destination);
@@ -50,12 +53,14 @@ export const submitBookingForm = async (
       apiFormData.append('receipt', formData.receipt);
     }
     
+    console.log("Sending API request...");
     const response = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       body: apiFormData,
     });
     
     const data = await response.json();
+    console.log("API response:", data);
     
     if (data.success) {
       setBookingSubmitted(true);
@@ -68,6 +73,7 @@ export const submitBookingForm = async (
       throw new Error(data.message || 'Something went wrong');
     }
   } catch (error) {
+    console.error("Submission error:", error);
     toast({
       title: "Submission Error",
       description: error instanceof Error ? error.message : "Failed to submit the form. Please try again.",

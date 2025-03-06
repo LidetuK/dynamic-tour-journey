@@ -26,11 +26,15 @@ const TourBookingFormContent = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted, current step:", currentStep);
-    await submitBookingForm(
-      formData, 
-      currentStep, 
-      { setIsSubmitting, setValidationErrors, setBookingSubmitted }
-    );
+    
+    // Only process form submission if we're on the last step (receipt upload)
+    if (currentStep === FORM_STEPS.length) {
+      await submitBookingForm(
+        formData, 
+        currentStep, 
+        { setIsSubmitting, setValidationErrors, setBookingSubmitted }
+      );
+    }
   };
 
   return (

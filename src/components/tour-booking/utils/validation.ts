@@ -4,6 +4,8 @@ import { TourFormData } from "../types";
 export const validateStep = (step: number, formData: TourFormData): string[] => {
   const errors: string[] = [];
   
+  console.log(`Running validation for step ${step}`);
+  
   switch (step) {
     case 1:
       if (!formData.destination.trim()) {
@@ -37,8 +39,8 @@ export const validateStep = (step: number, formData: TourFormData): string[] => 
       }
       break;
     case 5:
-      // No validation needed for payment information display
-      // This step is just informational, so we return no errors
+      // No validation needed for payment information step
+      // This step is just informational
       break;
     case 6:
       if (!formData.receipt) {
@@ -49,5 +51,6 @@ export const validateStep = (step: number, formData: TourFormData): string[] => 
       break;
   }
 
+  console.log(`Validation for step ${step} completed with errors:`, errors);
   return errors;
 };
